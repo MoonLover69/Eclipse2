@@ -16,6 +16,7 @@ namespace Eclipse2
     {
         protected override void OnStartup(StartupEventArgs e)
         {
+            // show important splash screen
             base.OnStartup(e);
             SplashScreen ss = new SplashScreen("SplashScreen.png");
             ss.Show(false);
