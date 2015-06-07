@@ -3,6 +3,6 @@
                     xmlns:sys="clr-namespace:System;assembly=System">
     <Image x:Key="SplashScreenImage" Source="SplashScreen.png" />
 
-    <sys:Uri x:Key="blick_src">Sounds/blick.wav</sys:Uri>
-    <MediaElement x:Key="SFX_Blick" Source="{DynamicResource blick_src}" LoadedBehavior="Manual" UnloadedBehavior="Stop"/>
+    <sys:Uri x:Key="blick_src">Resources/Sounds/blick.wav</sys:Uri>
+    <sys:Uri x:Key="maintheme_src">Resources/Sounds/maintheme.wav</sys:Uri>
 </ResourceDictionary>
