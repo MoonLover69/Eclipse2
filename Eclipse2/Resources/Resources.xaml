@@ -1,0 +1,8 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:sys="clr-namespace:System;assembly=System">
+    <Image x:Key="SplashScreenImage" Source="SplashScreen.png" />
+
+    <sys:Uri x:Key="blick_src">Sounds/blick.wav</sys:Uri>
+    <MediaElement x:Key="SFX_Blick" Source="{DynamicResource blick_src}" LoadedBehavior="Manual" UnloadedBehavior="Stop"/>
+</ResourceDictionary>

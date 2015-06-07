@@ -14,16 +14,5 @@ namespace Eclipse2
     /// </summary>
     public partial class App : Application
     {
-        protected override void OnStartup(StartupEventArgs e)
-        {
-            // show important splash screen
-            base.OnStartup(e);
-            SplashScreen ss = new SplashScreen("SplashScreen.png");
-            ss.Show(false);
-
-            Thread.Sleep(3000);
-
-            ss.Close(new TimeSpan());
-        }
     }
 }
