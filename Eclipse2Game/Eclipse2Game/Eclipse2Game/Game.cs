@@ -23,18 +23,18 @@ namespace Eclipse2Game
     /// </summary>
     public class Game : Microsoft.Xna.Framework.Game
     {
-        Vector2 _position = new Vector2(300, 100);
-        Sprite testSprite = new Sprite("Images/SplashScreen");
-        Sound _mainMusic = new Sound("Sounds/maintheme");
+        private GameState _currentState = GameState.Menu;
+        private Vector2 _position = new Vector2(300, 100);
+        private Sprite testSprite = new Sprite("Images/SplashScreen");
+        private Sound _mainMusic = new Sound("Sounds/maintheme", true);
 
-        GraphicsDeviceManager graphics;
-        SpriteBatch spriteBatch;
+        private GraphicsDeviceManager graphics;
+        private SpriteBatch spriteBatch;
 
         public Game()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
-            State = GameState.Menu;
         }
 
         /// <summary>
@@ -42,8 +42,23 @@ namespace Eclipse2Game
         /// </summary>
         public GameState State
         {
-            get;
-            private set;
+            get
+            {
+                return _currentState;
+            }
+            private set
+            {
+                if (_currentState != value)
+                {
+                    _currentState = value;
+
+                    var handler = StateChanged;
+                    if (handler != null)
+                    {
+                        handler(this, new StateChangedEventArgs(State, value));
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -90,13 +105,6 @@ namespace Eclipse2Game
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            // Allows the game to exit
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed ||
-                Keyboard.GetState().IsKeyDown(Keys.Escape))
-            {
-                this.Exit();
-            }
-
             if (State == GameState.Menu)
             {
                 if (!_mainMusic.IsPlaying)
@@ -106,23 +114,32 @@ namespace Eclipse2Game
             }
             else
             {
-                // Get some input.
-                UpdateInput();
+                _mainMusic.Stop();
             }
+
+            // Get some input.
+            UpdateInputs();
 
             base.Update(gameTime);
         }
 
-        protected void UpdateInput()
+        protected void UpdateInputs()
         {
             // Get the game pad state.
             GamePadState gamePadState = GamePad.GetState(PlayerIndex.One);
             if (gamePadState.IsConnected)
             {
             }
-            else
+
+            var keyboardState = Keyboard.GetState();
+            var keys = keyboardState.GetPressedKeys();
+            if (keyboardState.IsKeyDown(Keys.Enter))
             {
-                var keyboardState = Keyboard.GetState();
+                State = GameState.Game;
+            }
+            else if (keyboardState.IsKeyDown(Keys.Escape))
+            {
+                State = GameState.Menu;
             }
         }
 
@@ -135,10 +152,17 @@ namespace Eclipse2Game
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             spriteBatch.Begin();
-            testSprite.Draw(spriteBatch);
+
+            if (State == GameState.Menu)
+            {
+                testSprite.Draw(spriteBatch);
+            }
+
             spriteBatch.End();
 
             base.Draw(gameTime);
         }
+
+        public event EventHandler<StateChangedEventArgs> StateChanged;
     }
 }
