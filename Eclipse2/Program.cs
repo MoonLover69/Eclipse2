@@ -10,7 +10,7 @@ namespace Eclipse2Game
         /// </summary>
         static void Main(string[] args)
         {
-            using (Game game = new Game())
+            using (EclipseGame game = new EclipseGame())
             {
                 game.Run();
             }

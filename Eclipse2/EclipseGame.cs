@@ -11,53 +11,52 @@ using Eclipse2Game.GameObjects;
 
 namespace Eclipse2Game
 {
-    public enum GameState
+    public enum GameContent
     {
-        Menu,
+        MainMenu,
         Game,
+        Pause,
     }
 
     /// <summary>
     /// This is the main type for your game
     /// </summary>
-    public class Game : Microsoft.Xna.Framework.Game
+    public class EclipseGame : Microsoft.Xna.Framework.Game
     {
-        private GameState _currentState = GameState.Menu;
-        private Vector2 _position = new Vector2(300, 100);
         private Sprite testSprite = new Sprite("Images/SplashScreen");
         private Sound _mainMusic = new Sound("Sounds/Music/maintheme", true);
 
-        private GraphicsDeviceManager graphics;
-        private SpriteBatch spriteBatch;
-
-        public Game()
+        public EclipseGame()
         {
-            graphics = new GraphicsDeviceManager(this);
+            GraphicsManager = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
         }
 
         /// <summary>
         /// Current state of the game window (game, menu, etc)
         /// </summary>
-        public GameState State
+        public GameContent ActiveContent
         {
-            get
-            {
-                return _currentState;
-            }
-            private set
-            {
-                if (_currentState != value)
-                {
-                    _currentState = value;
+            get;
+            set;
+        }
 
-                    var handler = StateChanged;
-                    if (handler != null)
-                    {
-                        handler(this, new StateChangedEventArgs(State, value));
-                    }
-                }
-            }
+        /// <summary>
+        /// Manager of window graphics
+        /// </summary>
+        public GraphicsDeviceManager GraphicsManager
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// Manager of sprites
+        /// </summary>
+        public SpriteBatch SpriteManager
+        {
+            get;
+            set;
         }
 
         /// <summary>
@@ -68,7 +67,8 @@ namespace Eclipse2Game
         /// </summary>
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
+            Mouse.WindowHandle = this.Window.Handle;
+            this.IsMouseVisible = true;
 
             base.Initialize();
         }
@@ -80,11 +80,9 @@ namespace Eclipse2Game
         protected override void LoadContent()
         {
             // Create a new SpriteBatch, which can be used to draw textures.
-            spriteBatch = new SpriteBatch(GraphicsDevice);
+            SpriteManager = new SpriteBatch(GraphicsDevice);
 
-            // TODO: use this.Content to load your game content here
             testSprite.LoadContent(Content);
-
             _mainMusic.LoadContent(Content);
         }
 
@@ -104,7 +102,7 @@ namespace Eclipse2Game
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            if (State == GameState.Menu)
+            if (ActiveContent == GameContent.MainMenu)
             {
                 if (!_mainMusic.IsPlaying)
                 {
@@ -134,11 +132,18 @@ namespace Eclipse2Game
             var keys = keyboardState.GetPressedKeys();
             if (keyboardState.IsKeyDown(Keys.Enter))
             {
-                State = GameState.Game;
+                ActiveContent = GameContent.Game;
             }
             else if (keyboardState.IsKeyDown(Keys.Escape))
             {
-                State = GameState.Menu;
+                if (ActiveContent == GameContent.MainMenu)
+                {
+                    this.Exit();
+                }
+                else
+                {
+                    ActiveContent = GameContent.MainMenu;
+                }
             }
         }
 
@@ -150,18 +155,16 @@ namespace Eclipse2Game
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            spriteBatch.Begin();
+            SpriteManager.Begin();
 
-            if (State == GameState.Menu)
+            if (ActiveContent == GameContent.MainMenu)
             {
-                testSprite.Draw(spriteBatch);
+                testSprite.Draw(SpriteManager);
             }
 
-            spriteBatch.End();
+            SpriteManager.End();
 
             base.Draw(gameTime);
         }
-
-        public event EventHandler<StateChangedEventArgs> StateChanged;
     }
 }
