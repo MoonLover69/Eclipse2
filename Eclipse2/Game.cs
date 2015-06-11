@@ -4,7 +4,6 @@ using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.GamerServices;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
@@ -26,7 +25,7 @@ namespace Eclipse2Game
         private GameState _currentState = GameState.Menu;
         private Vector2 _position = new Vector2(300, 100);
         private Sprite testSprite = new Sprite("Images/SplashScreen");
-        private Sound _mainMusic = new Sound("Sounds/maintheme", true);
+        private Sound _mainMusic = new Sound("Sounds/Music/maintheme", true);
 
         private GraphicsDeviceManager graphics;
         private SpriteBatch spriteBatch;
