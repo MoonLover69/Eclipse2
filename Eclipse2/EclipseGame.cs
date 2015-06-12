@@ -25,7 +25,8 @@ namespace Eclipse2Game
     {
         private Sprite testSprite = new Sprite("Images/SplashScreen");
         private Sound _mainMusic = new Sound("Sounds/Music/maintheme", true);
-
+        ParticleEngine particleEngine;
+        SpriteBatch spriteBatch;
         public EclipseGame()
         {
             GraphicsManager = new GraphicsDeviceManager(this);
@@ -81,7 +82,12 @@ namespace Eclipse2Game
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             SpriteManager = new SpriteBatch(GraphicsDevice);
-
+            spriteBatch = new SpriteBatch(GraphicsDevice);
+            List<Texture2D> textures = new List<Texture2D>();
+            textures.Add(Content.Load<Texture2D>("ParticleCircle"));
+            textures.Add(Content.Load<Texture2D>("ParticleStar"));
+            textures.Add(Content.Load<Texture2D>("ParticleMoon"));
+            particleEngine = new ParticleEngine(textures, new Vector2(400, 240));
             testSprite.LoadContent(Content);
             _mainMusic.LoadContent(Content);
         }
@@ -108,12 +114,14 @@ namespace Eclipse2Game
                 {
                     _mainMusic.PlayRepeated();
                 }
+                
             }
             else
             {
                 _mainMusic.Stop();
             }
-
+            particleEngine.EmitterLocation = new Vector2(Mouse.GetState().X, Mouse.GetState().Y);
+            particleEngine.Update();
             // Get some input.
             UpdateInputs();
 
@@ -154,7 +162,7 @@ namespace Eclipse2Game
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
-
+            particleEngine.Draw(spriteBatch);
             SpriteManager.Begin();
 
             if (ActiveContent == GameContent.MainMenu)
