@@ -36,3 +36,9 @@
 /processorParam:Quality=Best
 /build:Sounds/Music/maintheme.wav
 
+#begin Fonts/OCR A Extended.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:TextureFormat=Compressed
+/build:Fonts/OCR A Extended.spritefont
+

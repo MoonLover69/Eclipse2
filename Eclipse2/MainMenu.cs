@@ -16,12 +16,17 @@ namespace Eclipse2Game
     {
         private Sound _mainMusic = new Sound("Sounds/Music/maintheme", true);
         private ParticleEngine _engine;
+        private TextDisplay _header;
 
         private bool _active;
 
         public MainMenu()
         {
             _engine = new ParticleEngine();
+
+            var headerLoc = new Vector2(EclipseGame.WINDOW_WIDTH / 2.0f, 100);
+
+            _header = new TextDisplay("Eclipse II", "Fonts/OCR A Extended", Color.Yellow, headerLoc);
         }
 
         public void LoadContent(ContentManager cm)
@@ -34,6 +39,8 @@ namespace Eclipse2Game
 
             ParticleGenerator pg = new WarpDriveParticleGenerator(centerScreen, star);
             _engine.AddParticleGenerator(pg);
+
+            _header.LoadContent(cm);
         }
 
         public void Update(GameTime gameTime)
@@ -49,6 +56,7 @@ namespace Eclipse2Game
 
         public void Draw(GameTime gameTime, SpriteBatch sb)
         {
+            _header.Draw(sb);
             _engine.Draw(sb);
         }
 

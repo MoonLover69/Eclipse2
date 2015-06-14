@@ -45,6 +45,7 @@
     <Compile Include="EclipseGame.cs" />
     <Compile Include="GameObjects\Sound.cs" />
     <Compile Include="GameObjects\Sprite.cs" />
+    <Compile Include="GameObjects\TextDisplay.cs" />
     <Compile Include="IStateManager.cs" />
     <Compile Include="MainMenu.cs" />
     <Compile Include="Particles\RandomParticleGenerator.cs" />
