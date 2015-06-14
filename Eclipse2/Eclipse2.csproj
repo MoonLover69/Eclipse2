@@ -45,8 +45,13 @@
     <Compile Include="EclipseGame.cs" />
     <Compile Include="GameObjects\Sound.cs" />
     <Compile Include="GameObjects\Sprite.cs" />
-    <Compile Include="Particle.cs" />
-    <Compile Include="ParticleEngine.cs" />
+    <Compile Include="IStateManager.cs" />
+    <Compile Include="MainMenu.cs" />
+    <Compile Include="Particles\RandomParticleGenerator.cs" />
+    <Compile Include="Particles\Particle.cs" />
+    <Compile Include="Particles\ParticleEngine.cs" />
+    <Compile Include="Particles\ParticleGenerator.cs" />
+    <Compile Include="Particles\WarpDriveParticleGenerator.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

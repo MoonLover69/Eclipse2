@@ -37,11 +37,6 @@ namespace Eclipse2Game.GameObjects
             _effect.Play();
         }
 
-        public void PlayRepeated()
-        {
-            _effect.Play();
-        }
-
         public void Stop()
         {
             _effect.Stop();

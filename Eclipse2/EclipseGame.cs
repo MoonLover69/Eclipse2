@@ -11,7 +11,7 @@ using Eclipse2Game.GameObjects;
 
 namespace Eclipse2Game
 {
-    public enum GameContent
+    public enum WindowContent
     {
         MainMenu,
         Game,
@@ -23,20 +23,27 @@ namespace Eclipse2Game
     /// </summary>
     public class EclipseGame : Microsoft.Xna.Framework.Game
     {
-        private Sprite testSprite = new Sprite("Images/SplashScreen");
-        private Sound _mainMusic = new Sound("Sounds/Music/maintheme", true);
-        ParticleEngine particleEngine;
-        SpriteBatch spriteBatch;
+        public const int WINDOW_WIDTH = 1280;
+        public const int WINDOW_HEIGHT = 960;
+
+        MainMenu _mainMenu;
+
         public EclipseGame()
         {
             GraphicsManager = new GraphicsDeviceManager(this);
+
+            GraphicsManager.IsFullScreen = false;
+            GraphicsManager.PreferredBackBufferWidth = WINDOW_WIDTH;
+            GraphicsManager.PreferredBackBufferHeight = WINDOW_HEIGHT;
+            GraphicsManager.ApplyChanges();
+
             Content.RootDirectory = "Content";
         }
 
         /// <summary>
         /// Current state of the game window (game, menu, etc)
         /// </summary>
-        public GameContent ActiveContent
+        public WindowContent ActiveContent
         {
             get;
             set;
@@ -71,6 +78,8 @@ namespace Eclipse2Game
             Mouse.WindowHandle = this.Window.Handle;
             this.IsMouseVisible = true;
 
+            _mainMenu = new MainMenu();
+
             base.Initialize();
         }
 
@@ -82,14 +91,15 @@ namespace Eclipse2Game
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             SpriteManager = new SpriteBatch(GraphicsDevice);
-            spriteBatch = new SpriteBatch(GraphicsDevice);
-            List<Texture2D> textures = new List<Texture2D>();
-            textures.Add(Content.Load<Texture2D>("ParticleCircle"));
-            textures.Add(Content.Load<Texture2D>("ParticleStar"));
-            textures.Add(Content.Load<Texture2D>("ParticleMoon"));
-            particleEngine = new ParticleEngine(textures, new Vector2(400, 240));
-            testSprite.LoadContent(Content);
-            _mainMusic.LoadContent(Content);
+
+            _mainMenu.LoadContent(Content);
+
+            //List<Texture2D> textures = new List<Texture2D>();
+            //textures.Add(Content.Load<Texture2D>("ParticleCircle"));
+            //textures.Add(Content.Load<Texture2D>("ParticleStar"));
+            //textures.Add(Content.Load<Texture2D>("ParticleMoon"));
+            //particleEngine = new ParticleEngine(textures, new Vector2(400, 240));
+            //_mainMusic.LoadContent(Content);
         }
 
         /// <summary>
@@ -108,20 +118,16 @@ namespace Eclipse2Game
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            if (ActiveContent == GameContent.MainMenu)
+            if (ActiveContent == WindowContent.MainMenu)
             {
-                if (!_mainMusic.IsPlaying)
-                {
-                    _mainMusic.PlayRepeated();
-                }
-                
+                _mainMenu.IsActive = true;
+                _mainMenu.Update(gameTime);
             }
             else
             {
-                _mainMusic.Stop();
+                _mainMenu.IsActive = false;
             }
-            particleEngine.EmitterLocation = new Vector2(Mouse.GetState().X, Mouse.GetState().Y);
-            particleEngine.Update();
+
             // Get some input.
             UpdateInputs();
 
@@ -140,17 +146,17 @@ namespace Eclipse2Game
             var keys = keyboardState.GetPressedKeys();
             if (keyboardState.IsKeyDown(Keys.Enter))
             {
-                ActiveContent = GameContent.Game;
+                ActiveContent = WindowContent.Game;
             }
             else if (keyboardState.IsKeyDown(Keys.Escape))
             {
-                if (ActiveContent == GameContent.MainMenu)
+                if (ActiveContent == WindowContent.MainMenu)
                 {
                     this.Exit();
                 }
                 else
                 {
-                    ActiveContent = GameContent.MainMenu;
+                    ActiveContent = WindowContent.MainMenu;
                 }
             }
         }
@@ -161,13 +167,20 @@ namespace Eclipse2Game
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
-            particleEngine.Draw(spriteBatch);
-            SpriteManager.Begin();
+            // Update the screen scale
+            var scaleX = (float)GraphicsDevice.Viewport.Width / WINDOW_WIDTH;
+            var scaleY = (float)GraphicsDevice.Viewport.Height / WINDOW_HEIGHT;
 
-            if (ActiveContent == GameContent.MainMenu)
+            Vector3 screenScale = new Vector3(scaleX, scaleY, 1.0f);
+
+            GraphicsDevice.Clear(Color.Black);
+
+            SpriteManager.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, 
+                DepthStencilState.Default, RasterizerState.CullNone, null, Matrix.CreateScale(screenScale));
+
+            if (_mainMenu.IsActive)
             {
-                testSprite.Draw(SpriteManager);
+                _mainMenu.Draw(gameTime, SpriteManager);
             }
 
             SpriteManager.End();
