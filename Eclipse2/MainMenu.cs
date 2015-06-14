@@ -33,7 +33,7 @@ namespace Eclipse2Game
         {
             _mainMusic.LoadContent(cm);
 
-            var star = cm.Load<Texture2D>("ParticleStar");
+            var star = cm.Load<Texture2D>("Particles/ParticleStar");
 
             Vector2 centerScreen = new Vector2(EclipseGame.WINDOW_WIDTH / 2.0f, EclipseGame.WINDOW_HEIGHT / 2.0f);
 
