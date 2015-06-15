@@ -23,9 +23,6 @@ namespace Eclipse2Game
     /// </summary>
     public class EclipseGame : Microsoft.Xna.Framework.Game
     {
-        public const int WINDOW_WIDTH = 1280;
-        public const int WINDOW_HEIGHT = 960;
-
         MainMenu _mainMenu;
 
         public EclipseGame()
@@ -33,8 +30,8 @@ namespace Eclipse2Game
             GraphicsManager = new GraphicsDeviceManager(this);
 
             GraphicsManager.IsFullScreen = false;
-            GraphicsManager.PreferredBackBufferWidth = WINDOW_WIDTH;
-            GraphicsManager.PreferredBackBufferHeight = WINDOW_HEIGHT;
+            GraphicsManager.PreferredBackBufferWidth = CoordinateHelper.WindowWidth;
+            GraphicsManager.PreferredBackBufferHeight = CoordinateHelper.WindowHeight;
             GraphicsManager.ApplyChanges();
 
             Content.RootDirectory = "Content";
@@ -168,8 +165,8 @@ namespace Eclipse2Game
         protected override void Draw(GameTime gameTime)
         {
             // Update the screen scale
-            var scaleX = (float)GraphicsDevice.Viewport.Width / WINDOW_WIDTH;
-            var scaleY = (float)GraphicsDevice.Viewport.Height / WINDOW_HEIGHT;
+            var scaleX = (float)GraphicsDevice.Viewport.Width / CoordinateHelper.WindowWidth;
+            var scaleY = (float)GraphicsDevice.Viewport.Height / CoordinateHelper.WindowHeight;
 
             Vector3 screenScale = new Vector3(scaleX, scaleY, 1.0f);
 

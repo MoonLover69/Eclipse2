@@ -48,7 +48,7 @@ namespace Eclipse2Game.Particles
         {
             foreach (var p in _currentParticles)
             {
-                p.Draw(spriteBatch);
+                p.Draw(spriteBatch, p.Position);
             }
         }
     }

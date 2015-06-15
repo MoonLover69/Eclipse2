@@ -43,10 +43,14 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="EclipseGame.cs" />
+    <Compile Include="GameObjects\Canvas.cs" />
+    <Compile Include="GameObjects\IDrawableObject.cs" />
     <Compile Include="GameObjects\Sound.cs" />
     <Compile Include="GameObjects\Sprite.cs" />
     <Compile Include="GameObjects\TextDisplay.cs" />
+    <Compile Include="CoordinateHelper.cs" />
     <Compile Include="IStateManager.cs" />
+    <Compile Include="MainGame.cs" />
     <Compile Include="MainMenu.cs" />
     <Compile Include="Particles\RandomParticleGenerator.cs" />
     <Compile Include="Particles\Particle.cs" />
@@ -66,6 +70,7 @@
   <ItemGroup>
     <Content Include="Game.ico" />
     <Content Include="GameThumbnail.png" />
+    <Content Include="Strings\text_01_intro.txt" />
   </ItemGroup>
   <ItemGroup>
     <MonoGameContentReference Include="Content\Content.mgcb" />

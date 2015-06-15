@@ -15,18 +15,18 @@ namespace Eclipse2Game
     public class MainMenu : IStateManager
     {
         private Sound _mainMusic = new Sound("Sounds/Music/maintheme", true);
-        private ParticleEngine _engine;
-        private TextDisplay _header;
+        private Canvas _mainCanvas = new Canvas(CoordinateHelper.WindowWidth, CoordinateHelper.WindowHeight);
+
+        private ParticleEngine _engine = new ParticleEngine();
 
         private bool _active;
 
         public MainMenu()
         {
-            _engine = new ParticleEngine();
+            var headerLoc = new Vector2(CoordinateHelper.WindowWidth / 2.0f, 100);
 
-            var headerLoc = new Vector2(EclipseGame.WINDOW_WIDTH / 2.0f, 100);
-
-            _header = new TextDisplay("Eclipse II", "Fonts/OCR A Extended", Color.Yellow, headerLoc);
+            var header = new TextDisplay("Eclipse II", "Fonts/OCR A Extended", Color.Yellow, headerLoc);
+            _mainCanvas.AddItem(header, 0);
         }
 
         public void LoadContent(ContentManager cm)
@@ -35,12 +35,10 @@ namespace Eclipse2Game
 
             var star = cm.Load<Texture2D>("Particles/ParticleStar");
 
-            Vector2 centerScreen = new Vector2(EclipseGame.WINDOW_WIDTH / 2.0f, EclipseGame.WINDOW_HEIGHT / 2.0f);
-
-            ParticleGenerator pg = new WarpDriveParticleGenerator(centerScreen, star);
+            ParticleGenerator pg = new WarpDriveParticleGenerator(CoordinateHelper.CenterScreen, star);
             _engine.AddParticleGenerator(pg);
 
-            _header.LoadContent(cm);
+            _mainCanvas.LoadContent(cm);
         }
 
         public void Update(GameTime gameTime)
@@ -56,7 +54,7 @@ namespace Eclipse2Game
 
         public void Draw(GameTime gameTime, SpriteBatch sb)
         {
-            _header.Draw(sb);
+            _mainCanvas.Draw(sb, _mainCanvas.Position);
             _engine.Draw(sb);
         }
 

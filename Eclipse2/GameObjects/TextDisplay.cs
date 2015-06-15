@@ -12,18 +12,12 @@ namespace Eclipse2Game.GameObjects
     /// <summary>
     /// Class used to display text on the screen
     /// </summary>
-    public class TextDisplay
+    public class TextDisplay : IDrawableObject
     {
         private SpriteFont _font;
         private string _fontName;
 
         public string Text
-        {
-            get;
-            set;
-        }
-
-        public Vector2 Location
         {
             get;
             set;
@@ -43,7 +37,7 @@ namespace Eclipse2Game.GameObjects
             Text = text;
             _fontName = fontName;
             TextColor = color;
-            Location = loc;
+            Position = loc;
         }
 
         /// <summary>
@@ -57,10 +51,25 @@ namespace Eclipse2Game.GameObjects
         /// <summary>
         /// Draw the sprite with the specified sprite batch
         /// </summary>
-        public void Draw(SpriteBatch sb)
+        public void Draw(SpriteBatch sb, Vector2 location)
         {
             var size = _font.MeasureString(Text);
-            sb.DrawString(_font, Text, Location - (size / 2), TextColor);
+            sb.DrawString(_font, Text, location - (size / 2), TextColor);
+        }
+
+        /// <summary>
+        /// Local position of this text
+        /// </summary>
+        public Vector2 Position
+        {
+            get;
+            set;
+        }
+
+        public Point GetSize()
+        {
+            var size = _font.MeasureString(Text);
+            return new Point((int)size.X, (int)size.Y);
         }
 
         public override string ToString()

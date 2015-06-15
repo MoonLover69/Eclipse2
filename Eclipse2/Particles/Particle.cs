@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
+using Eclipse2Game.GameObjects;
+using Microsoft.Xna.Framework.Content;
 
 namespace Eclipse2Game.Particles
 {
@@ -13,17 +15,39 @@ namespace Eclipse2Game.Particles
     /// such as position, velocity, acceleration, and rotation. They'll be drawn as
     /// sprites, all layered on top of one another, and will be very pretty.
     /// </summary>
-    public class Particle
+    public class Particle : Sprite
     {
-        private Texture2D _texture;
-        private Color _color;
+        /// <summary>
+        /// Create a new particle with the given characterisitics
+        /// </summary>
+        public Particle(Texture2D texture, Color color, Vector2 position, Vector2 velocity, Vector2 acceleration,
+            float lifetime, float scale, float rotationSpeed)
+            : base(texture)
+        {
+            ColorTint = color;
+
+            // set the values to the requested values
+            this.Position = position;
+            this.Velocity = velocity;
+            this.Acceleration = acceleration;
+            this.Lifetime = lifetime;
+            this.Scale = scale;
+            this.RotationSpeed = rotationSpeed;
+
+            // reset TimeSinceStart - we have to do this because particles will be
+            // reused.
+            this.TimeSinceStart = 0.0f;
+
+            // set rotation to some random value between 0 and 360 degrees.
+            this.Rotation = (float)((new Random()).NextDouble() * 2 * Math.PI);
+        }
+
 
         // Position, Velocity, and Acceleration represent exactly what their names
         // indicate. They are public fields rather than properties so that users
         // can directly access their .X and .Y properties.
-        public Vector2 Position;
-        public Vector2 Velocity;
-        public Vector2 Acceleration;
+        public Vector2 Velocity { get; set; }
+        public Vector2 Acceleration { get; set; }
 
         /// <summary>
         /// how long this particle will "live", in seconds
@@ -38,24 +62,6 @@ namespace Eclipse2Game.Particles
         /// how long it has been since initialize was called
         /// </summary>
         public float TimeSinceStart
-        {
-            get;
-            set;
-        }
-
-        /// <summary>
-        /// the scale of this particle
-        /// </summary>
-        public float Scale
-        {
-            get;
-            set;
-        }
-
-        /// <summary>
-        /// its rotation, in radians
-        /// </summary>
-        public float Rotation
         {
             get;
             set;
@@ -77,32 +83,6 @@ namespace Eclipse2Game.Particles
             get { return TimeSinceStart < Lifetime; }
         }
 
-
-        /// <summary>
-        /// Create a new particle with the given characterisitics
-        /// </summary>
-        public Particle(Texture2D texture, Color color, Vector2 position, Vector2 velocity, Vector2 acceleration,
-            float lifetime, float scale, float rotationSpeed)
-        {
-            _texture = texture;
-            _color = color;
-
-            // set the values to the requested values
-            this.Position = position;
-            this.Velocity = velocity;
-            this.Acceleration = acceleration;
-            this.Lifetime = lifetime;
-            this.Scale = scale;
-            this.RotationSpeed = rotationSpeed;
-
-            // reset TimeSinceStart - we have to do this because particles will be
-            // reused.
-            this.TimeSinceStart = 0.0f;
-
-            // set rotation to some random value between 0 and 360 degrees.
-            this.Rotation = (float)((new Random()).NextDouble() * 2 * Math.PI);
-        }
-
         // update is called by the ParticleSystem on every frame. This is where the
         // particle's position and that kind of thing get updated.
         public void Update(float dt)
@@ -113,15 +93,6 @@ namespace Eclipse2Game.Particles
             Rotation += RotationSpeed * dt;
 
             TimeSinceStart += dt;
-        }
-
-        public void Draw(SpriteBatch spriteBatch)
-        {
-            Rectangle sourceRectangle = new Rectangle(0, 0, _texture.Width, _texture.Height);
-            Vector2 origin = new Vector2(_texture.Width / 2, _texture.Height / 2);
-
-            spriteBatch.Draw(_texture, Position, sourceRectangle, _color,
-                Rotation, origin, Scale, SpriteEffects.None, 0f);
         }
     }
 }

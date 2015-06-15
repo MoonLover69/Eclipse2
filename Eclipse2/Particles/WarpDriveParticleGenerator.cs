@@ -32,7 +32,7 @@ namespace Eclipse2Game.Particles
 
             float size = (float)_random.NextDouble() / 2;
 
-            return new Particle(texture, color, _origin, velocity, velocity * 13, 30, size, angularVelocity);
+            return new Particle(texture, color, _origin, velocity, velocity * 100, 30, size, angularVelocity);
         }
     }
 }
