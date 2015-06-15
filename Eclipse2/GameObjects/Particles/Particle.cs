@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework;
 using Eclipse2Game.GameObjects;
 using Microsoft.Xna.Framework.Content;
 
-namespace Eclipse2Game.Particles
+namespace Eclipse2Game.GameObjects.Particles
 {
     /// <summary>
     /// particles are the little bits that will make up an effect. each effect will

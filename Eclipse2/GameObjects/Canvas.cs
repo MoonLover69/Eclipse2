@@ -81,17 +81,26 @@ namespace Eclipse2Game.GameObjects
             }
         }
 
+        /// <summary>
+        /// Draw the canvas without a position transform
+        /// </summary>
+        public void Draw(SpriteBatch sb)
+        {
+            Draw(sb, Position);
+        }
+
         public void Draw(SpriteBatch sb, Vector2 globalLocation)
         {
+#if DEBUG
+            sb.DrawRectangle(new Rectangle(new Point((int)globalLocation.X, (int)globalLocation.Y), this.GetSize()), Color.Gray);
+#endif
             foreach (var layer in _elements.Values)
             {
                 foreach (var item in layer)
                 {
-                    var itemLoc = CoordinateHelper.ToGlobalCoordinates(this.Width, this.Height, item.Position);
-
                     if (ItemVisible(item))
                     {
-                        item.Draw(sb, globalLocation + itemLoc);
+                        item.Draw(sb, globalLocation + item.Position);
                     }
                 }
             }

@@ -24,6 +24,7 @@ namespace Eclipse2Game
     public class EclipseGame : Microsoft.Xna.Framework.Game
     {
         MainMenu _mainMenu;
+        MainGame _game;
 
         public EclipseGame()
         {
@@ -77,6 +78,8 @@ namespace Eclipse2Game
 
             _mainMenu = new MainMenu();
 
+            _game = new MainGame();
+
             base.Initialize();
         }
 
@@ -90,7 +93,7 @@ namespace Eclipse2Game
             SpriteManager = new SpriteBatch(GraphicsDevice);
 
             _mainMenu.LoadContent(Content);
-
+            _game.LoadContent(Content);
             //List<Texture2D> textures = new List<Texture2D>();
             //textures.Add(Content.Load<Texture2D>("ParticleCircle"));
             //textures.Add(Content.Load<Texture2D>("ParticleStar"));
@@ -125,6 +128,16 @@ namespace Eclipse2Game
                 _mainMenu.IsActive = false;
             }
 
+            if (ActiveContent == WindowContent.Game)
+            {
+                _game.IsActive = true;
+                _game.Update(gameTime);
+            }
+            else
+            {
+                _game.IsActive = false;
+            }
+
             // Get some input.
             UpdateInputs();
 
@@ -147,14 +160,7 @@ namespace Eclipse2Game
             }
             else if (keyboardState.IsKeyDown(Keys.Escape))
             {
-                if (ActiveContent == WindowContent.MainMenu)
-                {
-                    this.Exit();
-                }
-                else
-                {
-                    ActiveContent = WindowContent.MainMenu;
-                }
+                ActiveContent = WindowContent.MainMenu;
             }
         }
 
@@ -178,6 +184,11 @@ namespace Eclipse2Game
             if (_mainMenu.IsActive)
             {
                 _mainMenu.Draw(gameTime, SpriteManager);
+            }
+
+            if (_game.IsActive)
+            {
+                _game.Draw(gameTime, SpriteManager);
             }
 
             SpriteManager.End();

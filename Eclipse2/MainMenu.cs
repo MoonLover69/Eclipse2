@@ -1,5 +1,5 @@
 ﻿using Eclipse2Game.GameObjects;
-using Eclipse2Game.Particles;
+using Eclipse2Game.GameObjects.Particles;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -54,7 +54,7 @@ namespace Eclipse2Game
 
         public void Draw(GameTime gameTime, SpriteBatch sb)
         {
-            _mainCanvas.Draw(sb, _mainCanvas.Position);
+            _mainCanvas.Draw(sb);
             _engine.Draw(sb);
         }
 

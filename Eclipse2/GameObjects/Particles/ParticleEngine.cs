@@ -5,7 +5,7 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Eclipse2Game.Particles
+namespace Eclipse2Game.GameObjects.Particles
 {
     public class ParticleEngine
     {

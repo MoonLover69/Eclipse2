@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Eclipse2Game.Particles
+namespace Eclipse2Game.GameObjects.Particles
 {
     public class RandomParticleGenerator : ParticleGenerator
     {

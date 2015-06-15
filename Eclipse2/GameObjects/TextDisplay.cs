@@ -54,6 +54,7 @@ namespace Eclipse2Game.GameObjects
         public void Draw(SpriteBatch sb, Vector2 location)
         {
             var size = _font.MeasureString(Text);
+
             sb.DrawString(_font, Text, location - (size / 2), TextColor);
         }
 
