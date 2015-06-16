@@ -25,7 +25,7 @@ namespace Eclipse2Game
         {
             var headerLoc = new Vector2(CoordinateHelper.WindowWidth / 2.0f, 100);
 
-            var header = new TextDisplay("Eclipse II", "Fonts/OCR A Extended", Color.Yellow, headerLoc);
+            var header = new TextLabel("Eclipse II", "Fonts/OCR A Extended", Color.Yellow, headerLoc);
             _mainCanvas.AddItem(header, 0);
             _mainCanvas.AddItem(_testButton, 10);
         }

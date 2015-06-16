@@ -46,9 +46,10 @@
     <Compile Include="GameObjects\Button.cs" />
     <Compile Include="GameObjects\Canvas.cs" />
     <Compile Include="GameObjects\IDrawableObject.cs" />
+    <Compile Include="GameObjects\TypewriterDisplay.cs" />
     <Compile Include="GameObjects\Sound.cs" />
     <Compile Include="GameObjects\Sprite.cs" />
-    <Compile Include="GameObjects\TextDisplay.cs" />
+    <Compile Include="GameObjects\TextLabel.cs" />
     <Compile Include="Utils\CoordinateHelper.cs" />
     <Compile Include="IStateManager.cs" />
     <Compile Include="MainGame.cs" />

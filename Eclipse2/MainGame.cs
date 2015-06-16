@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,8 +25,11 @@ namespace Eclipse2Game
             _textCanvas = new Canvas(CoordinateHelper.WindowWidth, CoordinateHelper.WindowHeight / 3,
                 new Vector2(0, CoordinateHelper.WindowHeight * 2 / 3));
 
-            var text = new TextDisplay("test text", "Fonts/OCR A Extended", Color.Yellow,
-                _textCanvas.GetCenterLoc());
+            var text = new TypewriterDisplay("Fonts/Typewriter", 0);
+            text.Position = new Vector2(50, 50);
+            text.TextSpeed = 20;
+
+            text.AddText("This is a test of the typewriter engine.");
 
             _textCanvas.AddItem(text, 0);
         }
@@ -38,7 +42,6 @@ namespace Eclipse2Game
 
         public void Update(GameTime gameTime)
         {
-            
         }
 
         public void Draw(GameTime gameTime, SpriteBatch sprites)

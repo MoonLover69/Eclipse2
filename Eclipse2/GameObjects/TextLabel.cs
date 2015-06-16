@@ -12,7 +12,7 @@ namespace Eclipse2Game.GameObjects
     /// <summary>
     /// Class used to display text on the screen
     /// </summary>
-    public class TextDisplay : IDrawableObject
+    public class TextLabel : IDrawableObject
     {
         private SpriteFont _font;
         private string _fontName;
@@ -32,7 +32,7 @@ namespace Eclipse2Game.GameObjects
         /// <summary>
         /// Create a new text object with the given font
         /// </summary>
-        public TextDisplay(string text, string fontName, Color color, Vector2 loc)
+        public TextLabel(string text, string fontName, Color color, Vector2 loc)
         {
             Text = text;
             _fontName = fontName;

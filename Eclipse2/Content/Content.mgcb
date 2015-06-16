@@ -86,3 +86,9 @@
 /processorParam:TextureFormat=Color
 /build:Particles/ParticleStar.png
 
+#begin Fonts/Typewriter.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:TextureFormat=Compressed
+/build:Fonts/Typewriter.spritefont
+
