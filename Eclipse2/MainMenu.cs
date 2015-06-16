@@ -14,26 +14,26 @@ namespace Eclipse2Game
 {
     public class MainMenu : IStateManager
     {
+        static Vector2 _origin = new Vector2(640, 500);
         private Sound _mainMusic = new Sound("Sounds/Music/maintheme", true);
         private Canvas _mainCanvas = new Canvas(CoordinateHelper.WindowWidth, CoordinateHelper.WindowHeight);
-
         private ParticleEngine _engine = new ParticleEngine();
-
+        private Texture2D testButton;
         private bool _active;
-
+        private Button _testButton = new Button("BeginButton", _origin, Color.White, 0, 0.5f);
         public MainMenu()
         {
             var headerLoc = new Vector2(CoordinateHelper.WindowWidth / 2.0f, 100);
 
             var header = new TextDisplay("Eclipse II", "Fonts/OCR A Extended", Color.Yellow, headerLoc);
             _mainCanvas.AddItem(header, 0);
+            _mainCanvas.AddItem(_testButton, 10);
         }
 
         public void LoadContent(ContentManager cm)
         {
             _mainMusic.LoadContent(cm);
-
-            var star = cm.Load<Texture2D>("Particles/ParticleStar");
+            var star = cm.Load<Texture2D>("Particles/ParticleCircle");
 
             ParticleGenerator pg = new WarpDriveParticleGenerator(CoordinateHelper.CenterScreen, star);
             _engine.AddParticleGenerator(pg);
