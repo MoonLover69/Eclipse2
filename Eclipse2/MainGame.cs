@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Eclipse2Game
 {
-    public class MainGame : IStateManager
+    public class MainGame : IStateManager, IInteractive
     {
         private Canvas _gameCanvas;
         private Canvas _textCanvas;
@@ -54,6 +54,16 @@ namespace Eclipse2Game
         {
             get;
             set;
+        }
+
+        public void HandleKeyboardInput(KeyboardState keyboard)
+        {
+
+        }
+
+        public void HandleMouseInput(MouseState mouse)
+        {
+
         }
     }
 }

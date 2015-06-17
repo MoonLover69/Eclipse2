@@ -4,15 +4,16 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 
 namespace Eclipse2Game.GameObjects.Particles
 {
-    public class ParticleEngine
+    public class ParticleSource : IInteractive
     {
         private List<ParticleGenerator> _particleGenerators;
         private List<Particle> _currentParticles;
 
-        public ParticleEngine()
+        public ParticleSource()
         {
             _particleGenerators = new List<ParticleGenerator>();
             _currentParticles = new List<Particle>();
@@ -23,18 +24,10 @@ namespace Eclipse2Game.GameObjects.Particles
             _particleGenerators.Add(pg);
         }
 
-
-        public void Update(GameTime gameTime, Vector2 mouseLocation)
+        public void Update(GameTime gameTime)
         {
             float dt = (float)(gameTime.ElapsedGameTime).TotalSeconds;
 
-            // Get some new particles
-            foreach (var pg in _particleGenerators)
-            {
-                _currentParticles.Add(pg.GenerateNewParticle(mouseLocation));
-            }
-                
-            // Now update them
             foreach (var p in _currentParticles)
             {
                 p.Update(dt);
@@ -49,6 +42,21 @@ namespace Eclipse2Game.GameObjects.Particles
             foreach (var p in _currentParticles)
             {
                 p.Draw(spriteBatch, p.Position);
+            }
+        }
+
+        public void HandleKeyboardInput(KeyboardState keyboard)
+        {
+            // Do nothing
+        }
+
+        public void HandleMouseInput(MouseState mouse)
+        {
+            // Get some new particles
+            foreach (var pg in _particleGenerators)
+            {
+                _currentParticles.Add(
+                    pg.GenerateNewParticle(new Vector2(mouse.X, mouse.Y)));
             }
         }
     }

@@ -146,14 +146,9 @@ namespace Eclipse2Game
 
         protected void UpdateInputs()
         {
-            // Get the game pad state.
-            GamePadState gamePadState = GamePad.GetState(PlayerIndex.One);
-            if (gamePadState.IsConnected)
-            {
-            }
-
             var keyboardState = Keyboard.GetState();
-            var keys = keyboardState.GetPressedKeys();
+            var mouseState = Mouse.GetState();
+
             if (keyboardState.IsKeyDown(Keys.Enter))
             {
                 ActiveContent = WindowContent.Game;
@@ -161,6 +156,18 @@ namespace Eclipse2Game
             else if (keyboardState.IsKeyDown(Keys.Escape))
             {
                 ActiveContent = WindowContent.MainMenu;
+            }
+
+            if (_mainMenu.IsActive)
+            {
+                _mainMenu.HandleKeyboardInput(keyboardState);
+                _mainMenu.HandleMouseInput(mouseState);
+            }
+
+            if (_game.IsActive)
+            {
+                _game.HandleKeyboardInput(keyboardState);
+                _game.HandleMouseInput(mouseState);
             }
         }
 

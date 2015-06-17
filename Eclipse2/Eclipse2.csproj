@@ -46,6 +46,7 @@
     <Compile Include="GameObjects\Button.cs" />
     <Compile Include="GameObjects\Canvas.cs" />
     <Compile Include="GameObjects\IDrawableObject.cs" />
+    <Compile Include="GameObjects\IInteractive.cs" />
     <Compile Include="GameObjects\TypewriterDisplay.cs" />
     <Compile Include="GameObjects\Sound.cs" />
     <Compile Include="GameObjects\Sprite.cs" />
@@ -56,7 +57,7 @@
     <Compile Include="MainMenu.cs" />
     <Compile Include="GameObjects\Particles\RandomParticleGenerator.cs" />
     <Compile Include="GameObjects\Particles\Particle.cs" />
-    <Compile Include="GameObjects\Particles\ParticleEngine.cs" />
+    <Compile Include="GameObjects\Particles\ParticleSource.cs" />
     <Compile Include="GameObjects\Particles\ParticleGenerator.cs" />
     <Compile Include="GameObjects\Particles\WarpDriveParticleGenerator.cs" />
     <Compile Include="Program.cs" />

@@ -12,13 +12,14 @@ using System.Threading.Tasks;
 
 namespace Eclipse2Game
 {
-    public class MainMenu : IStateManager
+    public class MainMenu : IStateManager, IInteractive
     {
         static Vector2 _origin = new Vector2(640, 500);
+
         private Sound _mainMusic = new Sound("Sounds/Music/maintheme", true);
         private Canvas _mainCanvas = new Canvas(CoordinateHelper.WindowWidth, CoordinateHelper.WindowHeight);
-        private ParticleEngine _engine = new ParticleEngine();
-        private Texture2D testButton;
+        private ParticleSource _particles = new ParticleSource();
+
         private bool _active;
         private Button _testButton = new Button("BeginButton", _origin, Color.White, 0, 0.5f);
         public MainMenu()
@@ -33,10 +34,11 @@ namespace Eclipse2Game
         public void LoadContent(ContentManager cm)
         {
             _mainMusic.LoadContent(cm);
-            var star = cm.Load<Texture2D>("Particles/ParticleCircle");
+            var star = cm.Load<Texture2D>("Particles/ParticleStar");
 
             ParticleGenerator pg = new WarpDriveParticleGenerator(CoordinateHelper.CenterScreen, star);
-            _engine.AddParticleGenerator(pg);
+            _particles.AddParticleGenerator(pg);
+            _particles.AddParticleGenerator(new RandomParticleGenerator(star));
 
             _mainCanvas.LoadContent(cm);
         }
@@ -48,14 +50,13 @@ namespace Eclipse2Game
                 _mainMusic.Play();
             }
 
-            var loc = new Vector2(Mouse.GetState().X, Mouse.GetState().Y);
-            _engine.Update(gameTime, loc);
+            _particles.Update(gameTime);
         }
 
         public void Draw(GameTime gameTime, SpriteBatch sb)
         {
             _mainCanvas.Draw(sb);
-            _engine.Draw(sb);
+            _particles.Draw(sb);
         }
 
         public bool IsActive
@@ -78,6 +79,16 @@ namespace Eclipse2Game
 
                 }
             }
+        }
+
+        public void HandleKeyboardInput(KeyboardState keyboard)
+        {
+            _particles.HandleKeyboardInput(keyboard);
+        }
+
+        public void HandleMouseInput(MouseState mouse)
+        {
+            _particles.HandleMouseInput(mouse);
         }
     }
 }
