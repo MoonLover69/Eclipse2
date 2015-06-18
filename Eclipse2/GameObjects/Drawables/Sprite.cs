@@ -32,6 +32,7 @@ namespace Eclipse2Game.GameObjects
             _assetName = assetName;
             Position = initialPos;
             ColorTint = Color.White;
+            Visible = true;
         }
 
         /// <summary>
@@ -83,13 +84,13 @@ namespace Eclipse2Game.GameObjects
         /// <summary>
         /// Draw the sprite with the specified sprite batch
         /// </summary>
-        public void Draw(SpriteBatch sb, Vector2 location)
+        public void Draw(GameTime gameTime, SpriteBatch sb)
         {
             Rectangle sourceRectangle = new Rectangle(0, 0, _texture.Width, _texture.Height);
             Vector2 origin = new Vector2(_texture.Width / 2, _texture.Height / 2);
 
             // White means no color tinting.
-            sb.Draw(_texture, location, sourceRectangle, ColorTint,
+            sb.Draw(_texture, Position, sourceRectangle, ColorTint,
                 Rotation, origin, Scale, SpriteEffects.None, 0f);
         }
         
@@ -104,6 +105,13 @@ namespace Eclipse2Game.GameObjects
         public override string ToString()
         {
             return _assetName;
+        }
+
+
+        public bool Visible
+        {
+            get;
+            set;
         }
     }
 }

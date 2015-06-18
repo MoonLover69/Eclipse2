@@ -11,18 +11,20 @@ using System.Threading.Tasks;
 
 namespace Eclipse2Game
 {
-    public class MainGame : IStateManager, IInteractive
+    public class MainGame : DrawableGameComponent
     {
-        private Canvas _gameCanvas;
-        private Canvas _textCanvas;
+        private ComponentPanel _upperPanel;
+        private ComponentPanel _lowerPanel;
 
-        public MainGame()
+        public MainGame(Game parent)
+            : base(parent)
         {
             // Game is upper part of screen
-            _gameCanvas = new Canvas(CoordinateHelper.WindowWidth, CoordinateHelper.WindowHeight * 2 / 3);
+            _upperPanel = new ComponentPanel(parent, CoordinateHelper.WindowWidth, CoordinateHelper.WindowHeight * 2 / 3);
 
             // Text display is lower part
-            _textCanvas = new Canvas(CoordinateHelper.WindowWidth, CoordinateHelper.WindowHeight / 3,
+            _lowerPanel = new ComponentPanel(parent,
+                CoordinateHelper.WindowWidth, CoordinateHelper.WindowHeight / 3,
                 new Vector2(0, CoordinateHelper.WindowHeight * 2 / 3));
 
             var text = new TypewriterDisplay("Fonts/Typewriter", 0);
@@ -31,39 +33,28 @@ namespace Eclipse2Game
 
             text.AddText("This is a test of the typewriter engine.");
 
-            _textCanvas.AddItem(text, 0);
+            _lowerPanel.AddItem(text, 0);
+            
+            parent.Components.Add(this);
         }
 
-        public void LoadContent(ContentManager cm)
+        public override void Update(GameTime gameTime)
         {
-            _gameCanvas.LoadContent(cm);
-            _textCanvas.LoadContent(cm);
+            KeyboardState keyboard = Keyboard.GetState();
+            if (keyboard.IsKeyDown(Keys.Escape))
+            {
+                this.Enabled = false;
+            }
+
+            base.Update(gameTime);
         }
 
-        public void Update(GameTime gameTime)
+        protected override void OnEnabledChanged(object sender, EventArgs args)
         {
-        }
+            _upperPanel.Enabled = this.Enabled;
+            _lowerPanel.Enabled = this.Enabled;
 
-        public void Draw(GameTime gameTime, SpriteBatch sprites)
-        {
-            _gameCanvas.Draw(sprites);
-            _textCanvas.Draw(sprites);
-        }
-
-        public bool IsActive
-        {
-            get;
-            set;
-        }
-
-        public void HandleKeyboardInput(KeyboardState keyboard)
-        {
-
-        }
-
-        public void HandleMouseInput(MouseState mouse)
-        {
-
+            base.OnEnabledChanged(sender, args);
         }
     }
 }

@@ -12,22 +12,42 @@ namespace Eclipse2Game.GameObjects
     /// <summary>
     /// Class that contains a drawable area.
     /// 
-    /// This can be used with other canvases to break the window into sub-areas.
+    /// This can be used to break the window into sub-areas.
     /// </summary>
-    public class Canvas : IDrawableObject
+    public class ComponentPanel : DrawableGameComponent
     {
+        private SpriteBatch _spriteBatch;
         private Dictionary<int, List<IDrawableObject>> _elements;
 
-        public Canvas(int width, int height)
-            : this (width, height, new Vector2(0,0))
+        public ComponentPanel(Game parent, int width, int height)
+            : this(parent, width, height, new Vector2(0, 0))
         { }
 
-        public Canvas(int width, int height, Vector2 position)
+        public ComponentPanel(Game parent, int width, int height, Vector2 position)
+            : base(parent)
         {
             Width = width;
             Height = height;
             _elements = new Dictionary<int, List<IDrawableObject>>();
+
             Position = position;
+
+            parent.Components.Add(this);
+        }
+
+        protected override void LoadContent()
+        {
+            base.LoadContent();
+
+            _spriteBatch = new SpriteBatch(Game.GraphicsDevice);
+
+            foreach (var layer in _elements.Values)
+            {
+                foreach (var item in layer)
+                {
+                    item.LoadContent(Game.Content);
+                }
+            }
         }
 
         public int Width
@@ -70,29 +90,34 @@ namespace Eclipse2Game.GameObjects
             }
         }
 
-        public void LoadContent(ContentManager cm)
+        public override void Update(GameTime gameTime)
         {
-            foreach (var layer in _elements.Values)
+            base.Update(gameTime);
+
+            var updateable = _elements.Values.Where(ele => ele is IUpdateableObject)
+                .Select(ele => (IUpdateableObject)ele);
+
+            foreach (var element in updateable)
             {
-                foreach (var item in layer)
-                {
-                    item.LoadContent(cm);
-                }
+                element.Update(gameTime);
             }
         }
 
-        /// <summary>
-        /// Draw the canvas without a position transform
-        /// </summary>
-        public void Draw(SpriteBatch sb)
+        public override void Draw(GameTime gameTime)
         {
-            Draw(sb, Position);
-        }
+            base.Draw(gameTime);
 
-        public void Draw(SpriteBatch sb, Vector2 globalLocation)
-        {
+            if (!this.Enabled)
+            {
+                return;
+            }
+
+            var matrix = Matrix.CreateTranslation(Position.X, Position.Y, 0);
+
+            _spriteBatch.Begin(transformMatrix: matrix);
+
 #if DEBUG
-            sb.DrawRectangle(new Rectangle(new Point((int)globalLocation.X, (int)globalLocation.Y), this.GetSize()), Color.Gray);
+            _spriteBatch.DrawRectangle(new Rectangle(Position.ToPoint(), this.GetSize()), Color.Gray);
 #endif
             foreach (var layer in _elements.Values)
             {
@@ -100,10 +125,12 @@ namespace Eclipse2Game.GameObjects
                 {
                     if (ItemVisible(item))
                     {
-                        item.Draw(sb, globalLocation + item.Position);
+                        item.Draw(gameTime, _spriteBatch);
                     }
                 }
             }
+
+            _spriteBatch.End();
         }
 
         private bool ItemVisible(IDrawableObject item)
@@ -121,7 +148,7 @@ namespace Eclipse2Game.GameObjects
                 return false;
             }
 
-            return true;
+            return item.Visible;
         }
 
         public Vector2 Position

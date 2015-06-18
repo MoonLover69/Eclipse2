@@ -21,10 +21,8 @@ namespace Eclipse2Game.GameObjects
 
         /// <summary>
         /// Draw the object with the specified sprite batch at the specified location.
-        /// 
-        /// The location in the draw event will be a global location.
         /// </summary>
-        void Draw(SpriteBatch sb, Vector2 location);
+        void Draw(GameTime gameTime, SpriteBatch sb);
 
         /// <summary>
         /// Local position of the drawable object.
@@ -42,5 +40,11 @@ namespace Eclipse2Game.GameObjects
         /// Get the total drawable size of the item 
         /// </summary>
         Point GetSize();
+
+        bool Visible
+        {
+            get;
+            set;
+        }
     }
 }

@@ -15,7 +15,7 @@ namespace Eclipse2Game.GameObjects.Particles
     /// such as position, velocity, acceleration, and rotation. They'll be drawn as
     /// sprites, all layered on top of one another, and will be very pretty.
     /// </summary>
-    public class Particle : Sprite
+    public class Particle : Sprite, IUpdateableObject
     {
         /// <summary>
         /// Create a new particle with the given characterisitics
@@ -83,10 +83,10 @@ namespace Eclipse2Game.GameObjects.Particles
             get { return TimeSinceStart < Lifetime; }
         }
 
-        // update is called by the ParticleSystem on every frame. This is where the
-        // particle's position and that kind of thing get updated.
-        public void Update(float dt)
+        public void Update(GameTime gameTime)
         {
+            var dt = (float)gameTime.ElapsedGameTime.TotalSeconds;
+
             Velocity += Acceleration * dt;
             Position += Velocity * dt;
 

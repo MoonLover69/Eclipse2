@@ -36,7 +36,7 @@ namespace Eclipse2Game
         /// <summary>
         /// Get the center location of the given canvas
         /// </summary>
-        public static Vector2 GetCenterLoc(this Canvas c)
+        public static Vector2 GetCenterLoc(this ComponentPanel c)
         {
             return GetCenterLoc(c.Width, c.Height);
         }

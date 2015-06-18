@@ -23,6 +23,7 @@ namespace Eclipse2Game.GameObjects
         private string _displayedText;
         // The text we are about to display
         private Queue<char> _newText;
+
         // Number of draws since last new character
         private int _drawCounter;
 
@@ -40,6 +41,7 @@ namespace Eclipse2Game.GameObjects
             _newText = new Queue<char>();
             _drawCounter = 0;
             _caretCounter = 0;
+            Visible = true;
         }
 
         /// <summary>
@@ -63,7 +65,7 @@ namespace Eclipse2Game.GameObjects
             text.ToList().ForEach(c => _newText.Enqueue(c));
         }
 
-        public void Draw(SpriteBatch sb, Vector2 location)
+        public void Draw(GameTime gameTime, SpriteBatch sb)
         {
             if (_drawCounter < TextSpeed)
             {
@@ -96,7 +98,7 @@ namespace Eclipse2Game.GameObjects
 
             _caretCounter++;
 
-            sb.DrawString(_font, text, location, Color.Green);
+            sb.DrawString(_font, text, Position, Color.Green);
         }
 
         public Vector2 Position
@@ -117,6 +119,13 @@ namespace Eclipse2Game.GameObjects
         public void LoadContent(ContentManager cm)
         {
             _font = cm.Load<SpriteFont>(_fontName);
+        }
+
+
+        public bool Visible
+        {
+            get;
+            set;
         }
     }
 }

@@ -38,6 +38,7 @@ namespace Eclipse2Game.GameObjects
             _fontName = fontName;
             TextColor = color;
             Position = loc;
+            Visible = true;
         }
 
         /// <summary>
@@ -51,11 +52,11 @@ namespace Eclipse2Game.GameObjects
         /// <summary>
         /// Draw the sprite with the specified sprite batch
         /// </summary>
-        public void Draw(SpriteBatch sb, Vector2 location)
+        public void Draw(GameTime gameTime, SpriteBatch sb)
         {
             var size = _font.MeasureString(Text);
 
-            sb.DrawString(_font, Text, location - (size / 2), TextColor);
+            sb.DrawString(_font, Text, Position - (size / 2), TextColor);
         }
 
         /// <summary>
@@ -70,12 +71,19 @@ namespace Eclipse2Game.GameObjects
         public Point GetSize()
         {
             var size = _font.MeasureString(Text);
-            return new Point((int)size.X, (int)size.Y);
+            return size.ToPoint();
         }
 
         public override string ToString()
         {
             return Text;
+        }
+
+
+        public bool Visible
+        {
+            get;
+            set;
         }
     }
 }

@@ -12,83 +12,94 @@ using System.Threading.Tasks;
 
 namespace Eclipse2Game
 {
-    public class MainMenu : IStateManager, IInteractive
+    public class MainMenu : DrawableGameComponent
     {
-        static Vector2 _origin = new Vector2(640, 500);
-
+        private SpriteBatch _spriteBatch;
         private Sound _mainMusic = new Sound("Sounds/Music/maintheme", true);
-        private Canvas _mainCanvas = new Canvas(CoordinateHelper.WindowWidth, CoordinateHelper.WindowHeight);
         private ParticleSource _particles = new ParticleSource();
 
-        private bool _active;
-        private Button _testButton = new Button("BeginButton", _origin, Color.White, 0, 0.5f);
-        public MainMenu()
+        private Button _testButton;
+        private TextLabel _header;
+
+
+        public MainMenu(Game parent)
+            : base(parent)
         {
+            parent.Components.Add(this);
+
             var headerLoc = new Vector2(CoordinateHelper.WindowWidth / 2.0f, 100);
 
-            var header = new TextLabel("Eclipse II", "Fonts/OCR A Extended", Color.Yellow, headerLoc);
-            _mainCanvas.AddItem(header, 0);
-            _mainCanvas.AddItem(_testButton, 10);
+            _header = new TextLabel("Eclipse II", "Fonts/OCR A Extended", Color.Yellow, headerLoc);
+            _testButton = new Button("BeginButton", CoordinateHelper.CenterScreen, Color.White, 0, 0.5f);
         }
 
-        public void LoadContent(ContentManager cm)
+        protected override void LoadContent()
         {
-            _mainMusic.LoadContent(cm);
-            var star = cm.Load<Texture2D>("Particles/ParticleStar");
+            base.LoadContent();
+
+            _spriteBatch = new SpriteBatch(Game.GraphicsDevice);
+            _testButton.LoadContent(Game.Content);
+
+            var star = Game.Content.Load<Texture2D>("Particles/ParticleStar");
 
             ParticleGenerator pg = new WarpDriveParticleGenerator(CoordinateHelper.CenterScreen, star);
             _particles.AddParticleGenerator(pg);
             _particles.AddParticleGenerator(new RandomParticleGenerator(star));
 
-            _mainCanvas.LoadContent(cm);
+            _particles.LoadContent(Game.Content);
+            _mainMusic.LoadContent(Game.Content);
+            _header.LoadContent(Game.Content);
         }
 
-        public void Update(GameTime gameTime)
+        protected override void OnEnabledChanged(object sender, EventArgs args)
         {
+            if (!this.Enabled)
+            {
+                _mainMusic.Stop();
+            }
+
+            base.OnEnabledChanged(sender, args);
+        }
+
+        public override void Update(GameTime gameTime)
+        {
+            KeyboardState keyboard = Keyboard.GetState();
+            if (keyboard.IsKeyDown(Keys.Enter))
+            {
+                this.Enabled = false;
+            }
+
+            if (!this.Enabled)
+            {
+                return;
+            }
+
             if (!_mainMusic.IsPlaying)
             {
                 _mainMusic.Play();
             }
 
             _particles.Update(gameTime);
+
+            base.Update(gameTime);
         }
 
-        public void Draw(GameTime gameTime, SpriteBatch sb)
+        public override void Draw(GameTime gameTime)
         {
-            _mainCanvas.Draw(sb);
-            _particles.Draw(sb);
-        }
+            base.Draw(gameTime);
 
-        public bool IsActive
-        {
-            get
+            if (!this.Enabled)
             {
-                return _active;
+                return;
             }
-            set
-            {
-                if (_active != value)
-                {
-                    _active = value;
 
-                    if (!_active)
-                    {
-                        // No longer active... stop music
-                        _mainMusic.Stop();
-                    }
+            _spriteBatch.Begin();
 
-                }
-            }
-        }
+            _particles.Draw(gameTime, _spriteBatch);
+            _testButton.Draw(gameTime, _spriteBatch);
+            _header.Draw(gameTime, _spriteBatch);
 
-        public void HandleKeyboardInput(KeyboardState keyboard)
-        {
-            _particles.HandleKeyboardInput(keyboard);
-        }
-
-        public void HandleMouseInput(MouseState mouse)
-        {
-            _particles.HandleMouseInput(mouse);
+            _spriteBatch.End();
         }
     }
 }
