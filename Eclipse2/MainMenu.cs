@@ -30,7 +30,8 @@ namespace Eclipse2Game
             var headerLoc = new Vector2(CoordinateHelper.WindowWidth / 2.0f, 100);
 
             _header = new TextLabel("Eclipse II", "Fonts/OCR A Extended", Color.Yellow, headerLoc);
-            _testButton = new Button("BeginButton", CoordinateHelper.CenterScreen, Color.White, 0, 0.5f);
+            _testButton = new Button("BeginButton", CoordinateHelper.CenterScreen);
+            _testButton.Scale = 0.5f;
         }
 
         protected override void LoadContent()
@@ -78,6 +79,10 @@ namespace Eclipse2Game
             {
                 _mainMusic.Play();
             }
+
+            var mouse = Mouse.GetState();
+
+            _testButton.HandleMouse(mouse);
 
             _particles.Update(gameTime);
 

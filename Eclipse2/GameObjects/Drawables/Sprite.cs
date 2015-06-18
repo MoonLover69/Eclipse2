@@ -86,20 +86,18 @@ namespace Eclipse2Game.GameObjects
         /// </summary>
         public void Draw(GameTime gameTime, SpriteBatch sb)
         {
-            Rectangle sourceRectangle = new Rectangle(0, 0, _texture.Width, _texture.Height);
             Vector2 origin = new Vector2(_texture.Width / 2, _texture.Height / 2);
 
             // White means no color tinting.
-            sb.Draw(_texture, Position, sourceRectangle, ColorTint,
+            sb.Draw(_texture, Position, null, ColorTint,
                 Rotation, origin, Scale, SpriteEffects.None, 0f);
         }
         
         public Point GetSize()
         {
-            Rectangle sourceRectangle = new Rectangle(0, 0, _texture.Width, _texture.Height);
-            Vector2 origin = new Vector2(_texture.Width / 2, _texture.Height / 2);
+            var vec = new Vector2(_texture.Width, _texture.Height);
 
-            return new Point(_texture.Width, _texture.Height);
+            return (Scale * vec).ToPoint();
         }
 
         public override string ToString()
