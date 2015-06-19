@@ -92,3 +92,27 @@
 /processorParam:TextureFormat=Compressed
 /build:Fonts/Typewriter.spritefont
 
+#begin Sounds/SFX/click2.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/SFX/click2.wav
+
+#begin Sounds/SFX/click3.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/SFX/click3.wav
+
+#begin Sounds/SFX/click4.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/SFX/click4.wav
+
+#begin Sounds/SFX/click1.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/SFX/click1.wav
+

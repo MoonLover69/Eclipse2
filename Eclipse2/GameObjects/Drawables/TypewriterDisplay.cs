@@ -15,6 +15,8 @@ namespace Eclipse2Game.GameObjects
         private const char Caret = '█';
 
         // Setup parameters
+        private Sound[] _clicks;
+
         private SpriteFont _font;
         private string _fontName;
         private int _maxWidth;
@@ -25,7 +27,7 @@ namespace Eclipse2Game.GameObjects
         private Queue<char> _newText;
 
         // Number of draws since last new character
-        private int _drawCounter;
+        private double _drawCounter;
 
         private int _caretCounter;
 
@@ -36,17 +38,28 @@ namespace Eclipse2Game.GameObjects
         {
             _fontName = fontName;
             _maxWidth = maxWidth;
-            TextSpeed = 1;
+            TextSpeed = 10;
             _displayedText = "";
             _newText = new Queue<char>();
             _drawCounter = 0;
             _caretCounter = 0;
             Visible = true;
+
+            // Create a lot of instances so we can play more than one at a time
+            _clicks = new Sound[] {
+                new Sound("Sounds/SFX/click1"), 
+                new Sound("Sounds/SFX/click2"),
+                new Sound("Sounds/SFX/click3"),
+                new Sound("Sounds/SFX/click4"),
+                new Sound("Sounds/SFX/click1"), 
+                new Sound("Sounds/SFX/click2"),
+                new Sound("Sounds/SFX/click3"),
+                new Sound("Sounds/SFX/click4")
+            };
         }
 
         /// <summary>
-        /// 1 to draw one letter per draw request.
-        /// 2 to draw one letter per 2 requests... etc
+        /// In letter/sec
         /// </summary>
         public int TextSpeed
         {
@@ -67,16 +80,22 @@ namespace Eclipse2Game.GameObjects
 
         public void Draw(GameTime gameTime, SpriteBatch sb)
         {
-            if (_drawCounter < TextSpeed)
-            {
-                _drawCounter++;
-            }
-            else
+            Random r = new Random();
+
+            _drawCounter += gameTime.ElapsedGameTime.TotalSeconds;
+
+            var diff = r.NextDouble() - 1;
+
+            _drawCounter += diff * gameTime.ElapsedGameTime.TotalSeconds;
+
+            if (_drawCounter >= (1.0 / TextSpeed))
             {
                 // time for a new char
                 if (_newText.Count > 0)
                 {
                     _displayedText += _newText.Dequeue();
+                    _clicks[r.Next(_clicks.Length - 1)].Play();
+                    CheckWordWrap();
                 }
                 _drawCounter = 0;
             }
@@ -101,6 +120,21 @@ namespace Eclipse2Game.GameObjects
             sb.DrawString(_font, text, Position, Color.Green);
         }
 
+        private void CheckWordWrap()
+        {
+            var size = GetSize();
+            if (size.X > _maxWidth)
+            {
+                // need to wrap the text
+
+                var words = _displayedText.Split();
+
+                string lastWord = words.Last();
+                _displayedText = _displayedText.Substring(0, _displayedText.Length - lastWord.Length);
+                _displayedText += Environment.NewLine + lastWord;
+            }
+        }
+
         public Vector2 Position
         {
             get;
@@ -119,6 +153,10 @@ namespace Eclipse2Game.GameObjects
         public void LoadContent(ContentManager cm)
         {
             _font = cm.Load<SpriteFont>(_fontName);
+            foreach (var c in _clicks)
+            {
+                c.LoadContent(cm);
+            }
         }
 
 

@@ -27,11 +27,11 @@ namespace Eclipse2Game
                 CoordinateHelper.WindowWidth, CoordinateHelper.WindowHeight / 3,
                 new Vector2(0, CoordinateHelper.WindowHeight * 2 / 3));
 
-            var text = new TypewriterDisplay("Fonts/Typewriter", 0);
+            var text = new TypewriterDisplay("Fonts/Typewriter", CoordinateHelper.WindowWidth - 100);
             text.Position = new Vector2(50, 50);
-            text.TextSpeed = 20;
+            text.TextSpeed = 10;
 
-            text.AddText("This is a test of the typewriter engine.");
+            text.AddText("This is a test of the typewriter engine. This is a test of the typewriter engine. This is a test of the typewriter engine. This is a test of the typewriter engine.");
 
             _lowerPanel.AddItem(text, 0);
             
