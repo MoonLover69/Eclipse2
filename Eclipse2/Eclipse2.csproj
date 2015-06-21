@@ -51,6 +51,8 @@
     <Compile Include="GameObjects\Sound.cs" />
     <Compile Include="GameObjects\Drawables\Sprite.cs" />
     <Compile Include="GameObjects\Drawables\TextLabel.cs" />
+    <Compile Include="State\GameState.cs" />
+    <Compile Include="State\PlayerInfo.cs" />
     <Compile Include="MainGame.cs" />
     <Compile Include="MainMenu.cs" />
     <Compile Include="GameObjects\Particles\RandomParticleGenerator.cs" />
@@ -61,6 +63,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utils\CoordinateHelper.cs" />
+    <Compile Include="Utils\KeyboardInput.cs" />
     <Compile Include="Utils\Primitives2D.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -1,4 +1,5 @@
 ﻿using Eclipse2Game.GameObjects;
+using Eclipse2Game.State;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -15,6 +16,7 @@ namespace Eclipse2Game
     {
         private ComponentPanel _upperPanel;
         private ComponentPanel _lowerPanel;
+        private TypewriterDisplay _text;
 
         public MainGame(Game parent)
             : base(parent)
@@ -27,15 +29,25 @@ namespace Eclipse2Game
                 CoordinateHelper.WindowWidth, CoordinateHelper.WindowHeight / 3,
                 new Vector2(0, CoordinateHelper.WindowHeight * 2 / 3));
 
-            var text = new TypewriterDisplay("Fonts/Typewriter", CoordinateHelper.WindowWidth - 100);
-            text.Position = new Vector2(50, 50);
-            text.TextSpeed = 10;
+            _text = new TypewriterDisplay("Fonts/Typewriter", CoordinateHelper.WindowWidth - 100);
+            _text.Position = new Vector2(50, 50);
+            _text.TextSpeed = 15;
 
-            text.AddText("This is a test of the typewriter engine. This is a test of the typewriter engine. This is a test of the typewriter engine. This is a test of the typewriter engine.");
+            _text.AddText("Please enter your name: ");
+            _text.TakeInput();
+            _text.Input += _text_Input;
 
-            _lowerPanel.AddItem(text, 0);
+            _lowerPanel.AddItem(_text, 0);
             
             parent.Components.Add(this);
+        }
+
+        void _text_Input(object sender, UserInputEventArgs e)
+        {
+            GameState.Instance.Player.Name = e.Input;
+            _text.Clear();
+
+            _text.AddText("Hello " + GameState.Instance.Player.Name);
         }
 
         public override void Update(GameTime gameTime)

@@ -94,12 +94,15 @@ namespace Eclipse2Game.GameObjects
         {
             base.Update(gameTime);
 
-            var updateable = _elements.Values.Where(ele => ele is IUpdateableObject)
-                .Select(ele => (IUpdateableObject)ele);
-
-            foreach (var element in updateable)
+            foreach (var layer in _elements.Values)
             {
-                element.Update(gameTime);
+                foreach (IDrawableObject obj in layer)
+                {
+                    if (obj is IUpdateableObject)
+                    {
+                        ((IUpdateableObject)obj).Update(gameTime);
+                    }
+                }
             }
         }
 
