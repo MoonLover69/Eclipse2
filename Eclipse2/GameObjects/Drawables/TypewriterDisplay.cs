@@ -15,7 +15,7 @@ namespace Eclipse2Game.GameObjects
     {
         #region static parameters
 
-        public enum DisplayState
+        enum DisplayState
         {
             /// <summary>
             /// Nothing happening but blinking cursor
@@ -103,6 +103,17 @@ namespace Eclipse2Game.GameObjects
             set;
         }
 
+        /// <summary>
+        /// Whether the textbox is idle
+        /// </summary>
+        public bool Idle
+        {
+            get
+            {
+                return _state == DisplayState.Idle;
+            }
+        }
+
         public void Clear()
         {
             _input = String.Empty;
@@ -137,17 +148,15 @@ namespace Eclipse2Game.GameObjects
 
             var ks = Keyboard.GetState();
 
-            if (_lastKeys != null)
+            KeyboardUtils.ConvertKeyboardInput(ks, _lastKeys, ref _input);
+            var newKeys = KeyboardUtils.GetDebouncedKeys(ks, _lastKeys);
+
+            if (newKeys.Contains(Keys.Enter))
             {
-                KeyboardUtils.HandleKeyboardInput(ks, _lastKeys, ref _input);
+                // User is done entering
+                _state = DisplayState.Idle;
 
-                if (ks.IsKeyDown(Keys.Enter) && !_lastKeys.IsKeyDown(Keys.Enter))
-                {
-                    // User is done entering
-                    _state = DisplayState.Idle;
-
-                    OnUserInput(_input);
-                }
+                OnUserInput(_input);
             }
 
             _lastKeys = ks;

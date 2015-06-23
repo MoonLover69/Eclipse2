@@ -16,5 +16,14 @@ namespace Eclipse2Game.State
             get;
             set;
         }
+
+        /// <summary>
+        /// Name of the player's ship
+        /// </summary>
+        public string ShipName
+        {
+            get;
+            set;
+        }
     }
 }

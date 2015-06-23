@@ -9,27 +9,21 @@ namespace Eclipse2Game.Utils
 {
     public static class KeyboardUtils
     {
-       /// <summary>
-       /// Tries to convert keyboard input to characters and prevents repeatedly returning the 
-       /// same character if a key was pressed last frame, but not yet unpressed this frame.
-       /// </summary>
-       /// <param name="keyboard">The current KeyboardState</param>
-       /// <param name="oldKeyboard">The KeyboardState of the previous frame</param>
-       /// <param name="key">When this method returns, contains the correct character if conversion succeeded.
-       /// Else contains the null, (000), character.</param>
-       /// <returns>True if conversion was successful</returns>
-        public static bool TryConvertKeyboardInput(KeyboardState keyboard, KeyboardState oldKeyboard, ref string currentInput)
+        /// <summary>
+        /// Tries to convert keyboard input to characters and prevents repeatedly returning the 
+        /// same character if a key was pressed last frame, but not yet unpressed this frame.
+        /// </summary>
+        /// <returns>True if conversion was successful</returns>
+        public static void ConvertKeyboardInput(KeyboardState keyboard, KeyboardState last, ref string currentInput)
         {
-            Keys[] keys = keyboard.GetPressedKeys();
+            var keys = keyboard.GetPressedKeys();
+
             bool shift = keyboard.IsKeyDown(Keys.LeftShift) || keyboard.IsKeyDown(Keys.RightShift);
 
-            foreach (var k in keys)
-            {
-                if (oldKeyboard.IsKeyDown(k))
-                {
-                    continue;
-                }
+            var debouncedKeys = GetDebouncedKeys(keyboard, last);
 
+            foreach (var k in debouncedKeys)
+            {
                 char key = (char)0;
 
                 switch (k)
@@ -99,38 +93,6 @@ namespace Eclipse2Game.Utils
                     case Keys.OemMinus: if (shift) { key = '_'; } else { key = '-'; } break;
                     case Keys.OemComma: if (shift) { key = '<'; } else { key = ','; } break;
                     case Keys.Space: key = ' '; break;
-                }
-
-                if (key != (char)0)
-                {
-                    currentInput += key;
-                }
-            }
-
-            return false;
-        }
-
-        /// <summary>
-        /// Handle keyboard input for the give string
-        /// </summary>
-        /// <param name="keyboard"></param>
-        /// <param name="oldKeyboard"></param>
-        /// <param name="currentInput">The string to modify based on keyboard input</param>
-        /// <returns></returns>
-        public static void HandleKeyboardInput(KeyboardState keyboard, KeyboardState oldKeyboard, ref string currentInput)
-        {
-            TryConvertKeyboardInput(keyboard, oldKeyboard, ref currentInput);
-
-            var keys = keyboard.GetPressedKeys();
-            var lastKeys = oldKeyboard.GetPressedKeys();
-
-            // Debounce the button by only getting newly pressed keys
-            var debouncedKeys = keys.Where(k => !lastKeys.Contains(k));
-
-            foreach (var key in debouncedKeys)
-            { 
-                switch (key)
-                {
                     case Keys.Back:
                     {
                         if (currentInput.Length > 0)
@@ -140,7 +102,27 @@ namespace Eclipse2Game.Utils
                         break;
                     }
                 }
+
+                // If it is zero, then we couldn't determine the input
+                if (key != (char)0)
+                {
+                    currentInput += key;
+                }
             }
+        }
+
+        public static Keys[] GetDebouncedKeys(KeyboardState keyboard, KeyboardState last)
+        {
+            if (last == null)
+            {
+                return keyboard.GetPressedKeys();
+            }
+
+            var keys = keyboard.GetPressedKeys();
+            var lastKeys = last.GetPressedKeys();
+
+            // Debounce the button by only getting newly pressed keys
+            return keys.Where(k => !lastKeys.Contains(k)).ToArray();
         }
     }
 }
