@@ -72,7 +72,7 @@ namespace Eclipse2Game.Strings {
         
         /// <summary>
         ///   Looks up a localized string similar to Erm... what was your name again?
-        ///:.
+        ///: .
         /// </summary>
         internal static string IntroString02 {
             get {
@@ -92,7 +92,7 @@ namespace Eclipse2Game.Strings {
         
         /// <summary>
         ///   Looks up a localized string similar to Oh, and I have completely forgotten, what is your ship called?
-        ///:.
+        ///: .
         /// </summary>
         internal static string IntroString04 {
             get {
@@ -106,6 +106,42 @@ namespace Eclipse2Game.Strings {
         internal static string IntroString05 {
             get {
                 return ResourceManager.GetString("IntroString05", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You have been in hypersleep for quite some time.  Do you need a quick flying lesson?.
+        /// </summary>
+        internal static string IntroString06 {
+            get {
+                return ResourceManager.GetString("IntroString06", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Yes, I need a tutorial of sorts!.
+        /// </summary>
+        internal static string IntroString06_1 {
+            get {
+                return ResourceManager.GetString("IntroString06_1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No, I am the best captain in the hexiverse!.
+        /// </summary>
+        internal static string IntroString06_2 {
+            get {
+                return ResourceManager.GetString("IntroString06_2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to TODO: Tutorial.
+        /// </summary>
+        internal static string TutorialString01 {
+            get {
+                return ResourceManager.GetString("TutorialString01", resourceCulture);
             }
         }
     }

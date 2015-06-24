@@ -15,15 +15,16 @@ namespace Eclipse2Game.Modules
     class IntroModule : GameModule
     {
         private TypewriterDisplay _text;
-        
-        private int _stringIndex = 0;
+        private int _moduleIndex = 0;
+        private bool _forceAdvance = false;
 
         public IntroModule(Game parent, ComponentPanel upper, ComponentPanel lower)
             : base(parent, upper, lower)
         {
             _text = new TypewriterDisplay("Fonts/Typewriter", CoordinateHelper.WindowWidth - 100);
             _text.Position = new Vector2(50, 50);
-            _text.TextSpeed = 15;
+            _text.TextSpeed = 100;
+            _text.Visible = false;
 
             lower.AddItem(_text, 0);
         }
@@ -31,8 +32,17 @@ namespace Eclipse2Game.Modules
         protected override void OnModuleStarted()
         {
             base.OnModuleStarted();
+            _text.Visible = true;
 
             AdvanceText();
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            base.Dispose(disposing);
+
+            LowerPanel.RemoveItem(_text);
+            _text = null;
         }
 
         public override void Update(GameTime gameTime)
@@ -43,8 +53,9 @@ namespace Eclipse2Game.Modules
 
             var newKeys = KeyboardUtils.GetDebouncedKeys(CurrentKeyboard, LastKeyboard);
 
-            if ((_text.Idle) && newKeys.Contains(Keys.Enter))
+            if (((_text.Idle) && newKeys.Contains(Keys.Enter)) || _forceAdvance)
             {
+                _forceAdvance = false;
                 _text.Clear();
                 AdvanceText();
             }
@@ -52,7 +63,7 @@ namespace Eclipse2Game.Modules
 
         private void AdvanceText()
         {
-            switch (_stringIndex)
+            switch (_moduleIndex)
             {
                 case 0:
                 {
@@ -68,7 +79,6 @@ namespace Eclipse2Game.Modules
                 }
                 case 2:
                 {
-                    _text.Input -= NameInput;
                     _text.AddText(String.Format(TutorialStrings.IntroString03, GameState.Instance.Player.Name));
                     break;
                 }
@@ -84,26 +94,45 @@ namespace Eclipse2Game.Modules
                     _text.AddText(String.Format(TutorialStrings.IntroString05, GameState.Instance.Player.ShipName));
                     break;
                 }
+                case 5:
+                {
+                    _text.AddText(TutorialStrings.IntroString06);
+                    _text.Choice += MakeTutorialChoice;
+                    _text.AddChoices(TutorialStrings.IntroString06_1, TutorialStrings.IntroString06_2);
+                    break;
+                }
                 default:
                 {
-                    OnModuleComplete();
+                    CompleteModule();
                     break;
                 }
             }
 
-            _stringIndex++;
+            _moduleIndex++;
         }
 
-        private void ShipNameInput(object sender, UserInputEventArgs e)
+        void ShipNameInput(object sender, UserInputEventArgs e)
         {
             GameState.Instance.Player.ShipName = e.Input;
-            ((TypewriterDisplay)sender).Clear();
         }
 
         void NameInput(object sender, UserInputEventArgs e)
         {
             GameState.Instance.Player.Name = e.Input;
-            ((TypewriterDisplay)sender).Clear();
+        }
+
+        void MakeTutorialChoice(object sender, UserChoiceEventArgs e)
+        {
+            var tmp = NextModule;
+
+            if (e.Choice == 2)
+            {
+                // Skip the tutorial module
+                this.NextModule = tmp.NextModule;
+            }
+
+            // Force advancement to the next module
+            _forceAdvance = true;
         }
     }
 }

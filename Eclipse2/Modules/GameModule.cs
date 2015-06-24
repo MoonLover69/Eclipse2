@@ -9,6 +9,9 @@ using System.Threading.Tasks;
 
 namespace Eclipse2Game.Modules
 {
+    /// <summary>
+    /// A Game module is a "chapter" in the game that will handle user input and display the proper text
+    /// </summary>
     public abstract class GameModule : DrawableGameComponent
     {
         public GameModule(Game parent, ComponentPanel upperPanel, ComponentPanel lowerPanel)
@@ -18,6 +21,15 @@ namespace Eclipse2Game.Modules
             LowerPanel = lowerPanel;
             Enabled = false;
             State = ModuleState.NotStarted;
+        }
+
+        /// <summary>
+        /// The next module that should be started after this one
+        /// </summary>
+        public GameModule NextModule
+        {
+            get;
+            set;
         }
 
         /// <summary>
@@ -77,17 +89,35 @@ namespace Eclipse2Game.Modules
         }
 
         /// <summary>
-        /// Signals the module complete event
+        /// Call this to complete the current module
         /// </summary>
-        protected virtual void OnModuleComplete()
+        protected void CompleteModule()
         {
             State = ModuleState.Complete;
+
+            OnModuleComplete();
 
             var handler = Complete;
             if (handler != null)
             {
                 handler(this, EventArgs.Empty);
             }
+
+            // Start the next module if needed
+            if (NextModule != null)
+            {
+                NextModule.Start();
+            }
+
+            Dispose();
+        }
+
+        /// <summary>
+        /// Occurs when the module is about to marked as complete
+        /// </summary>
+        protected virtual void OnModuleComplete()
+        {
+            this.Enabled = false;
         }
 
         public override void Update(GameTime gameTime)

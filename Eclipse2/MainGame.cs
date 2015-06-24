@@ -31,8 +31,11 @@ namespace Eclipse2Game
                 CoordinateHelper.WindowWidth, CoordinateHelper.WindowHeight / 3,
                 new Vector2(0, CoordinateHelper.WindowHeight * 2 / 3));
 
-
+            // Build the list of modules
             _intro = new IntroModule(parent, _upperPanel, _lowerPanel);
+            _intro.NextModule = new TutorialModule(parent, _upperPanel, _lowerPanel);
+            _intro.NextModule.NextModule = new ChapterOneModule(parent, _upperPanel, _lowerPanel);
+
             _intro.Start();
 
             parent.Components.Add(this);

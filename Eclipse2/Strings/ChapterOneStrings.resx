@@ -117,40 +117,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="IntroString01" xml:space="preserve">
-    <value>Captain! Oh Captain!
-You are the greatest captain to ever live!</value>
-  </data>
-  <data name="IntroString02" xml:space="preserve">
-    <value>Erm... what was your name again?
-: </value>
-    <comment>User Input</comment>
-  </data>
-  <data name="IntroString03" xml:space="preserve">
-    <value>Thats right! Captain {0}! What a sexy name!
-And I am your Commanding officer/lover, Admiral Juniper.</value>
-    <comment>Print Player Name</comment>
-  </data>
-  <data name="IntroString04" xml:space="preserve">
-    <value>Oh, and I have completely forgotten, what is your ship called?
-: </value>
-    <comment>User Input</comment>
-  </data>
-  <data name="IntroString05" xml:space="preserve">
-    <value>Ah yes... {0}.  Never has there been a finer ship in all of the hexiverse.</value>
-    <comment>Print Ship Name</comment>
-  </data>
-  <data name="IntroString06" xml:space="preserve">
-    <value>You have been in hypersleep for quite some time.  Do you need a quick flying lesson?</value>
-    <comment>Take user input</comment>
-  </data>
-  <data name="IntroString06_1" xml:space="preserve">
-    <value>Yes, I need a tutorial of sorts!</value>
-  </data>
-  <data name="IntroString06_2" xml:space="preserve">
-    <value>No, I am the best captain in the hexiverse!</value>
-  </data>
-  <data name="TutorialString01" xml:space="preserve">
-    <value>TODO: Tutorial</value>
+  <data name="String001" xml:space="preserve">
+    <value>TODO: Chapter 1</value>
   </data>
 </root>

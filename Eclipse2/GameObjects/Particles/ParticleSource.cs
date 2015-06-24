@@ -9,7 +9,7 @@ using Microsoft.Xna.Framework.Content;
 
 namespace Eclipse2Game.GameObjects.Particles
 {
-    public class ParticleSource : IDrawableObject, IUpdateableObject
+    public class ParticleSource : IDrawableComponent, IUpdateableObject
     {
         private List<ParticleGenerator> _particleGenerators;
         private List<Particle> _currentParticles;

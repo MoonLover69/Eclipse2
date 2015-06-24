@@ -12,7 +12,7 @@ namespace Eclipse2Game.GameObjects
     /// <summary>
     /// Class used to display text on the screen
     /// </summary>
-    public class TextLabel : IDrawableObject
+    public class TextLabel : IDrawableComponent
     {
         private SpriteFont _font;
         private string _fontName;

@@ -10,9 +10,9 @@ using System.Threading.Tasks;
 namespace Eclipse2Game.GameObjects
 {
     /// <summary>
-    /// Represents an item that can be drawn using a sprite batch
+    /// Represents an item that can be drawn in a Component Panel
     /// </summary>
-    public interface IDrawableObject
+    public interface IDrawableComponent
     {
         /// <summary>
         /// Load the required content
@@ -41,6 +41,9 @@ namespace Eclipse2Game.GameObjects
         /// </summary>
         Point GetSize();
 
+        /// <summary>
+        /// Whether the object should be drawn in the component panel
+        /// </summary>
         bool Visible
         {
             get;

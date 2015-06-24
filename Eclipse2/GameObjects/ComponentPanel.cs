@@ -17,7 +17,7 @@ namespace Eclipse2Game.GameObjects
     public class ComponentPanel : DrawableGameComponent
     {
         private SpriteBatch _spriteBatch;
-        private Dictionary<int, List<IDrawableObject>> _elements;
+        private Dictionary<int, List<IDrawableComponent>> _elements;
 
         public ComponentPanel(Game parent, int width, int height)
             : this(parent, width, height, new Vector2(0, 0))
@@ -28,7 +28,7 @@ namespace Eclipse2Game.GameObjects
         {
             Width = width;
             Height = height;
-            _elements = new Dictionary<int, List<IDrawableObject>>();
+            _elements = new Dictionary<int, List<IDrawableComponent>>();
 
             Position = position;
 
@@ -66,11 +66,11 @@ namespace Eclipse2Game.GameObjects
         /// Add a drawable item to the specified layer.
         /// The higher the layer, the later it gets drawn.
         /// </summary>
-        public void AddItem(IDrawableObject item, int layer)
+        public void AddItem(IDrawableComponent item, int layer)
         {
             if (!_elements.ContainsKey(layer))
             {
-                _elements[layer] = new List<IDrawableObject>();
+                _elements[layer] = new List<IDrawableComponent>();
             }
 
             if (!_elements[layer].Contains(item))
@@ -79,7 +79,7 @@ namespace Eclipse2Game.GameObjects
             }
         }
 
-        public void RemoveItem(IDrawableObject item)
+        public void RemoveItem(IDrawableComponent item)
         {
             foreach (var layer in _elements.Values)
             {
@@ -94,9 +94,10 @@ namespace Eclipse2Game.GameObjects
         {
             base.Update(gameTime);
 
-            foreach (var layer in _elements.Values)
+            var layers = _elements.Values;
+            foreach (var layer in layers)
             {
-                foreach (IDrawableObject obj in layer)
+                foreach (IDrawableComponent obj in layer)
                 {
                     if (obj is IUpdateableObject)
                     {
@@ -136,7 +137,7 @@ namespace Eclipse2Game.GameObjects
             _spriteBatch.End();
         }
 
-        private bool ItemVisible(IDrawableObject item)
+        private bool ItemVisible(IDrawableComponent item)
         {
             var size = item.GetSize();
             var pos = item.Position;

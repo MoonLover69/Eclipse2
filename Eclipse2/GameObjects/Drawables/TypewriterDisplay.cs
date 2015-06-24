@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Eclipse2Game.GameObjects
 {
-    public class TypewriterDisplay : IDrawableObject, IUpdateableObject
+    public class TypewriterDisplay : IDrawableComponent, IUpdateableObject
     {
         #region static parameters
 
@@ -28,14 +28,14 @@ namespace Eclipse2Game.GameObjects
             Typing,
 
             /// <summary>
-            /// Typing, and then take user input afterwards
-            /// </summary>
-            UserInputPending,
-
-            /// <summary>
             /// Awaiting user input
             /// </summary>
             UserInput,
+
+            /// <summary>
+            /// Awaiting a user choice
+            /// </summary>
+            UserChoice,
         }
 
         private const double BlinkInterval = 0.5;
@@ -47,6 +47,7 @@ namespace Eclipse2Game.GameObjects
         private Sound[] _clicks;
 
         private DisplayState _state;
+        private DisplayState _nextState;
 
         private SpriteFont _font;
         private string _fontName;
@@ -58,6 +59,8 @@ namespace Eclipse2Game.GameObjects
         private Queue<char> _newText;
         // Latest user input
         private string _input;
+        // User choices to display
+        private string[] _choices;
 
         // Keep track of time since last new character and last caret blink
         private double _newCharCounter;
@@ -104,7 +107,7 @@ namespace Eclipse2Game.GameObjects
         }
 
         /// <summary>
-        /// Whether the textbox is idle
+        /// Whether the textbox is idle (done typing)
         /// </summary>
         public bool Idle
         {
@@ -114,15 +117,28 @@ namespace Eclipse2Game.GameObjects
             }
         }
 
+        /// <summary>
+        /// Clear all text and input from this display
+        /// </summary>
         public void Clear()
         {
             _input = String.Empty;
             _displayedText = String.Empty;
             _newText.Clear();
+            _choices = new string[0];
+
+            // Clear event handlers
+            Input = null;
+            Choice = null;
 
             _state = DisplayState.Idle;
+            _nextState = DisplayState.Idle;
         }
 
+        /// <summary>
+        /// Add text to this display
+        /// </summary>
+        /// <param name="text"></param>
         public void AddText(string text)
         {
             if (text.Length > 0)
@@ -132,31 +148,80 @@ namespace Eclipse2Game.GameObjects
             }
         }
 
+        /// <summary>
+        /// Signals that the display should take user input after displaying its current string
+        /// </summary>
         public void TakeInput()
         {
-            _state = DisplayState.UserInputPending;
+            if (_nextState != DisplayState.Idle)
+            {
+                throw new InvalidOperationException("Cannot take user input without clearing first!");
+            }
+
+            _nextState = DisplayState.UserInput;
+        }
+
+        /// <summary>
+        /// Add the given choices to the display.
+        /// </summary>
+        /// <param name="choices"></param>
+        public void AddChoices(params string[] choices)
+        { 
+            if (choices.Length >= 10 || choices.Length < 1)
+            {
+                throw new ArgumentException("Must have between 1 and 9 choices");
+            }
+
+            if (_nextState != DisplayState.Idle)
+            {
+                throw new InvalidOperationException("Cannot add user choices without clearing first!");
+            }
+
+            _nextState = DisplayState.UserChoice;
+            _choices = choices;
         }
 
         KeyboardState _lastKeys;
 
         public void Update(GameTime gameTime)
         {
-            if (_state != DisplayState.UserInput)
-            {
-                return;
-            }
-
             var ks = Keyboard.GetState();
 
-            KeyboardUtils.ConvertKeyboardInput(ks, _lastKeys, ref _input);
-            var newKeys = KeyboardUtils.GetDebouncedKeys(ks, _lastKeys);
-
-            if (newKeys.Contains(Keys.Enter))
+            if (_state == DisplayState.UserInput)
             {
-                // User is done entering
-                _state = DisplayState.Idle;
+                KeyboardUtils.ConvertKeyboardInput(ks, _lastKeys, ref _input);
+                var newKeys = KeyboardUtils.GetDebouncedKeys(ks, _lastKeys);
 
-                OnUserInput(_input);
+                if (newKeys.Contains(Keys.Enter))
+                {
+                    // User is done entering
+                    _state = DisplayState.Idle;
+
+                    OnUserInput(_input);
+                }
+            }
+            else if (_state == DisplayState.UserChoice)
+            {
+                string nums = String.Empty;
+                KeyboardUtils.ConvertKeyboardInput(ks, _lastKeys, ref nums);
+                
+                // Check the user input string to see if it matches a choice
+                foreach (char c in nums)
+                {
+                    int num;
+                    bool success = int.TryParse(c.ToString(), out num);
+
+                    if (success)
+                    {
+                        // This is a number
+                        if ((num <= _choices.Length) && (num > 0))
+                        {
+                            // It is a valid choice!
+                            OnUserChoice(num);
+                        }
+                    }
+                }
+
             }
 
             _lastKeys = ks;
@@ -164,7 +229,7 @@ namespace Eclipse2Game.GameObjects
 
         public void Draw(GameTime gameTime, SpriteBatch sb)
         {
-            if (_state == DisplayState.Typing || _state == DisplayState.UserInputPending)
+            if (_state == DisplayState.Typing)
             {
                 Random r = new Random();
 
@@ -185,15 +250,7 @@ namespace Eclipse2Game.GameObjects
                     }
                     else
                     {
-                        // No more characters
-                        if (_state == DisplayState.UserInputPending)
-                        {
-                            _state = DisplayState.UserInput;
-                        }
-                        else
-                        {
-                            _state = DisplayState.Idle;
-                        }
+                        _state = _nextState;
                     }
 
                     _newCharCounter = 0;
@@ -204,9 +261,23 @@ namespace Eclipse2Game.GameObjects
 
             string text = _displayedText;
 
+            // Add typed input to the display
             if ((_state == DisplayState.UserInput) && !String.IsNullOrEmpty(_input))
             {
                 text += _input;
+            }
+
+            // Display the user choices
+            if (_state == DisplayState.UserChoice)
+            {
+                text += Environment.NewLine;
+                int num = 0;
+                foreach (string choice in _choices)
+                {
+                    text += Environment.NewLine;
+                    text += String.Format("{0}.  {1}", ++num, choice);
+                }
+                text += Environment.NewLine;
             }
 
             // Blink the caret
@@ -223,21 +294,6 @@ namespace Eclipse2Game.GameObjects
             _caretCounter += gameTime.ElapsedGameTime.TotalSeconds;
 
             sb.DrawString(_font, text, Position, Color.Green);
-        }
-
-        private void CheckWordWrap()
-        {
-            var size = GetSize();
-            if (size.X > _maxWidth)
-            {
-                // need to wrap the text
-
-                var words = _displayedText.Split();
-
-                string lastWord = words.Last();
-                _displayedText = _displayedText.Substring(0, _displayedText.Length - lastWord.Length);
-                _displayedText += Environment.NewLine + lastWord;
-            }
         }
 
         public Vector2 Position
@@ -279,7 +335,32 @@ namespace Eclipse2Game.GameObjects
             }
         }
 
+        protected void OnUserChoice(int choice)
+        {
+            var handler = Choice;
+            if (handler != null)
+            {
+                handler(this, new UserChoiceEventArgs(choice));
+            }
+        }
+
         public event EventHandler<UserInputEventArgs> Input;
+        public event EventHandler<UserChoiceEventArgs> Choice;
+
+        private void CheckWordWrap()
+        {
+            var size = GetSize();
+            if (size.X > _maxWidth)
+            {
+                // need to wrap the text
+
+                var words = _displayedText.Split();
+
+                string lastWord = words.Last();
+                _displayedText = _displayedText.Substring(0, _displayedText.Length - lastWord.Length);
+                _displayedText += Environment.NewLine + lastWord;
+            }
+        }
     }
 
     public class UserInputEventArgs : EventArgs
@@ -293,6 +374,20 @@ namespace Eclipse2Game.GameObjects
         {
             get;
             private set; 
+        }
+    }
+
+    public class UserChoiceEventArgs : EventArgs
+    {
+        public UserChoiceEventArgs(int choice)
+        {
+            Choice = choice;
+        }
+
+        public int Choice
+        {
+            get;
+            private set;
         }
     }
 }

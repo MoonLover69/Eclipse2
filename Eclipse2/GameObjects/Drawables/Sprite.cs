@@ -11,7 +11,7 @@ namespace Eclipse2Game.GameObjects
     /// <summary>
     /// Class used to display a sprite on the screen
     /// </summary>
-    public class Sprite : IDrawableObject
+    public class Sprite : IDrawableComponent
     {
         private Texture2D _texture;
         private string _assetName;
